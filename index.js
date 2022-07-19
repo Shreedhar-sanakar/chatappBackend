@@ -28,13 +28,13 @@ app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRoutes);
 
 //connecting to socket.io
-const server = app.listen(process.env.PORT, () =>
-  console.log(`Server started on ${process.env.PORT}`)
-);
+var server = require('http').createServer(app);
+server.listen(process.env.PORT);
 const io = socket(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true,
+    methods: ['GET', 'POST']
   },
 });
 
@@ -42,7 +42,7 @@ global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
-    onlineUsers.set(userId, socket.id);
+    onlineUsers.set(userId, socket.id);p
   });
 
   socket.on("send-msg", (data) => {
